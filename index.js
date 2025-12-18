@@ -1,9 +1,12 @@
 const jwt = require("jsonwebtoken");
 const express = require("express");
+const cors = require("cors");
 const app = express();
 const port = 5000;
 
 app.use(express.json());
+app.use(cors({ origin: "http://localhost:5173" }));
+app.use(express.urlencoded({ extended: true }));
 
 // const { MongoClient, ServerApiVersion } = require("mongodb");
 const mongoose = require("mongoose");
@@ -35,10 +38,6 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    validation: () => {
-      const re = /\S+@\S+\.\S+/;
-      return re.test(this.email);
-    },
     required: true,
   },
   password: {
@@ -139,7 +138,7 @@ async function run() {
 
         const privateKey = "secret";
 
-        const expirationTime = "1d";
+        const expirationTime = "10d";
 
         const accessToken = jwt.sign(payload, privateKey, {
           expiresIn: expirationTime,
